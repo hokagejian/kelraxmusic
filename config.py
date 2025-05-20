@@ -7,20 +7,20 @@ from pyrogram import filters
 load_dotenv()
 
 # ───── Basic Bot Configuration ───── #
-API_ID = int(getenv("26384726"))
-API_HASH = getenv("b1e51e7bca277000a00eb038a72d7fb2")
-BOT_TOKEN = getenv("8035520828:AAEVZCR2Mgcp-2ei7gwOqrI9bX9IFnrWubw")
+API_ID = int(getenv("API_ID"))
+API_HASH = getenv("6684413228de152cb7e93ec1e97cf737")
+BOT_TOKEN = getenv("7687591049:AAH-BMzGllHqeCkJ_oGkfXQGU8QQav0bCHM")
 
-OWNER_ID = int(getenv("77001230", ))
-OWNER_USERNAME = getenv("OWNER_USERNAME", "cip_e")
-BOT_USERNAME = getenv("BOT_USERNAME", "zeamusicbot")
-BOT_NAME = getenv("BOT_NAME", "˹ᴛᴜɴᴇ ᴠɪᴀ ʙᴏᴛ˼")
-ASSUSERNAME = getenv("ASSUSERNAME", "zeamusicbot")
-EVALOP = list(map(int, getenv("EVALOP", "77001230").split()))
+OWNER_ID = int(getenv("OWNER_ID", ))
+OWNER_USERNAME = getenv("OWNER_USERNAME", "ofckelragtg")
+BOT_USERNAME = getenv("BOT_USERNAME", "kelramusicbot")
+BOT_NAME = getenv("BOT_NAME", "˹ᴋᴇʟʀᴀ ᴠɪᴀ ʙᴏᴛ˼")
+ASSUSERNAME = getenv("ASSUSERNAME", "kelramusicbot")
+EVALOP = list(map(int, getenv("EVALOP", "1928612564").split()))
 
 # ───── Mongo & Logging ───── #
 MONGO_DB_URI = getenv("mongodb+srv://zea:123@cluster0.wlpzmlz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-LOGGER_ID = int(getenv("LOGGER_ID", -1001324302978))
+LOGGER_ID = int(getenv("LOGGER_ID", -1002465368786))
 
 # ───── Limits and Durations ───── #
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 17000))
@@ -44,8 +44,8 @@ UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "Master")
 GIT_TOKEN = getenv("GIT_TOKEN")
 
 # ───── Support & Community ───── #
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://zeatapistore")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/zeatapistore")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://ofckelrapillas")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/kelrapillass")
 
 # ───── Assistant Auto Leave ───── #
 AUTO_LEAVING_ASSISTANT = False
