@@ -1,0 +1,204 @@
+#!/bin/bash
+
+# -----------------------------#
+#  Colorful Print Function    #
+# -----------------------------#
+pprint() {
+    # Define color codes
+    local cred='\033[0;31m'
+    local cgreen='\033[0;32m'
+    local cyellow='\033[0;33m'
+    local cblue='\033[0;34m'
+    local cmagenta='\033[0;35m'
+    local ccyan='\033[0;36m'
+    local creset='\033[0m'
+
+    local color="${!2:-$cmagenta}"
+    printf "${color}$1${creset}"
+}
+
+# -----------------------------#
+#  Yes/No Prompt Function     #
+# -----------------------------#
+yesnoprompt() {
+    local old_stty_cfg
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    local answer
+    answer=$(head -c 1)
+    stty "$old_stty_cfg"
+    echo "$answer" | grep -iq "^y"
+}
+
+# -----------------------------#
+#  System Update Function     #
+# -----------------------------#
+update() {
+    pprint "\n\nUpdating package list... " "ccyan"
+    sudo apt update 2>&1 | grep "can be upgraded" &>/dev/null
+
+    if [ $? -eq 0 ]; then
+        pprint "UPDATE AVAILABLE\n" "cyellow"
+        pprint "Do you want to automatically upgrade (y/n)? " "ccyan"
+        if yesnoprompt; then
+            pprint "\n\nUpgrading packages... " "ccyan"
+            sudo apt upgrade -y &>/dev/null &&
+                pprint "DONE!\n\n" "cgreen" || {
+                    pprint "FAIL.\n\n" "cred"
+                    exit 1
+                }
+        else
+            echo
+        fi
+    else
+        pprint "ALREADY UP TO DATE\n\n" "cgreen"
+    fi
+}
+
+# -----------------------------#
+#  Package Installation       #
+# -----------------------------#
+packages() {
+    if ! command -v pip &>/dev/null; then
+        pprint "Couldn't find pip, installing now... " "ccyan"
+        sudo apt install python3-pip -y &>pypilog.txt &&
+            pprint "SUCCESS.\n\n" "cgreen" || {
+                pprint "FAIL.\n\n" "cred"
+                exit 1
+            }
+    fi
+
+    if ! command -v ffmpeg &>/dev/null; then
+        pprint "Couldn't find ffmpeg, installing now... " "ccyan"
+        sudo apt install ffmpeg -y &>/dev/null &&
+            pprint "SUCCESS.\n\n" "cgreen" || {
+                pprint "FAIL.\n\n" "cred"
+                pprint "You need to install ffmpeg manually to deploy Tune X Music.\n" "cred"
+                exit 1
+            }
+    fi
+
+    # Check ffmpeg version
+    local fv
+    fv=$(grep -Po 'version (3.*?) ' <<< "$(ffmpeg -version)")
+    if [ -n "$fv" ]; then
+        pprint "Note: ffmpeg $fv may not support live streams. Version 4+ is recommended.\n" "cyellow"
+    fi
+}
+
+# -----------------------------#
+#  Node.js Installation       #
+# -----------------------------#
+node() {
+    command -v npm &>/dev/null && return
+
+    pprint "Installing Node.js and npm...  " "ccyan"
+    curl -fsSL https://deb.nodesource.com/setup_19.x | sudo -E bash - &>nodelog.txt &&
+        sudo apt install -y nodejs &>>nodelog.txt &&
+        sudo npm i -g npm &>>nodelog.txt &&
+        pprint "SUCCESS!\n" "cgreen" || {
+            pprint "FAIL.\n" "cred"
+            exit 1
+        }
+}
+
+# -----------------------------#
+#  Python Dependencies        #
+# -----------------------------#
+installation() {
+    pprint "\n\nUpgrading pip and installing dependencies...\n" "ccyan"
+    pip3 install -U pip &>>pypilog.txt &&
+        pip3 install -U -r requirements.txt &>>pypilog.txt &&
+        pprint "DONE.\n" "cgreen" || {
+            pprint "FAIL.\n" "cred"
+            exit 1
+        }
+}
+
+# -----------------------------#
+#  Banner Display             #
+# -----------------------------#
+display_banner() {
+    local cmagenta='\033[0;35m'
+    local creset='\033[0m'
+
+    printf "${cmagenta}"
+    cat << "EOF"
+
+████████╗██╗   ██╗███╗   ██╗███████╗
+╚══██╔══╝██║   ██║████╗  ██║██╔════╝
+   ██║   ██║   ██║██╔██╗ ██║█████╗  
+   ██║   ██║   ██║██║╚██╗██║██╔══╝  
+   ██║   ╚██████╔╝██║ ╚████║███████╗
+   ╚═╝    ╚═════╝ ╚═╝  ╚═══╝╚══════╝                                                                  
+
+EOF
+    printf "${creset}"
+}
+
+# -----------------------------#
+#  Main Execution             #
+# -----------------------------#
+main() {
+    clear
+    display_banner
+
+    pprint "\nWelcome to Tune Setup Installer\n\n" "cgreen"
+    pprint "If any errors occur, check log files:\n" "ccyan"
+    pprint "- Node.js: nodelog.txt\n" "ccyan"
+    pprint "- Python:  pypilog.txt\n\n" "ccyan"
+    sleep 1
+
+    pprint "This script requires sudo privileges to install packages.\n" "ccyan"
+    sudo true || exit 1
+
+    update
+    packages
+    node
+    installation
+
+    pprint "\nTune Installation Completed!\n" "cgreen"
+    sleep 1
+    clear
+
+    display_banner
+    pprint "\nEnter Your Configuration Values\n\n" "cgreen"
+
+    # Read environment variables
+    read -p "$(pprint 'API ID: ' 'cyellow')" api_id
+    read -p "$(pprint 'API HASH: ' 'cyellow')" api_hash
+    read -p "$(pprint 'BOT TOKEN: ' 'cyellow')" bot_token
+    read -p "$(pprint 'OWNER ID: ' 'cyellow')" ownid
+    read -p "$(pprint 'MONGO DB URI: ' 'cyellow')" mongo_db
+    read -p "$(pprint 'LOG GROUP ID: ' 'cyellow')" logger
+    read -p "$(pprint 'STRING SESSION: ' 'cyellow')" string_session
+    read -p "$(pprint 'COOKIE URL: ' 'cyellow')" cookie_url
+    read -p "$(pprint 'API_URL : ' 'cyellow')" api_url
+    read -p "$(pprint 'API_KEY : ' 'cyellow')" api_key
+
+
+    pprint "\nProcessing your variables, please wait...\n" "ccyan"
+
+    # Save environment variables
+    cat << EOF > .env
+API_ID=$api_id
+API_HASH=$api_hash
+BOT_TOKEN=$bot_token
+MONGO_DB_URI=$mongo_db
+LOGGER_ID=$logger
+STRING_SESSION=$string_session
+OWNER_ID=$ownid
+DEEP_API=$deep_api
+COOKIE_URL=$cookie_url
+API_URL=$api_url
+API_KEY=$api_key
+
+EOF
+
+    clear
+    pprint "\nThanks for using the Tune installer. Configuration saved successfully!\n" "cgreen"
+    pprint "To edit variables later, use: vi .env\n" "ccyan"
+    pprint "To start the bot: bash start\n\n" "cgreen"
+}
+
+main
