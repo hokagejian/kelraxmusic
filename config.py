@@ -7,20 +7,20 @@ from pyrogram import filters
 load_dotenv()
 
 # ───── Basic Bot Configuration ───── #
-API_ID = int(getenv("API_ID"))
-API_HASH = getenv("6684413228de152cb7e93ec1e97cf737")
-BOT_TOKEN = getenv("7687591049:AAH-BMzGllHqeCkJ_oGkfXQGU8QQav0bCHM")
+API_ID = int(getenv("API_ID", "28795088"))
+API_HASH = getenv("API_HASH", "6684413228de152cb7e93ec1e97cf737")
+BOT_TOKEN = getenv("BOT_TOKEN", "7687591049:AAH-BMzGllHqeCkJ_oGkfXQGU8QQav0bCHM")
 
-OWNER_ID = int(getenv("OWNER_ID", ))
+OWNER_ID = int(getenv("OWNER_ID", "1928612564"))
 OWNER_USERNAME = getenv("OWNER_USERNAME", "ofckelragtg")
 BOT_USERNAME = getenv("BOT_USERNAME", "kelramusicbot")
 BOT_NAME = getenv("BOT_NAME", "˹ᴋᴇʟʀᴀ ᴠɪᴀ ʙᴏᴛ˼")
-ASSUSERNAME = getenv("ASSUSERNAME", "kelramusicbot")
+ASSUSERNAME = getenv("ASSUSERNAME", "iiiiiA_Aiiiii")
 EVALOP = list(map(int, getenv("EVALOP", "1928612564").split()))
 
 # ───── Mongo & Logging ───── #
-MONGO_DB_URI = getenv("mongodb+srv://zea:123@cluster0.wlpzmlz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-LOGGER_ID = int(getenv("LOGGER_ID", -1002465368786))
+MONGO_DB_URI = getenv("MONGO_DB_URI:, "mongodb+srv://zea:123@cluster0.wlpzmlz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+LOGGER_ID = int(getenv("LOGGER_ID", "-1002465368786"))
 
 # ───── Limits and Durations ───── #
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 17000))
@@ -30,7 +30,7 @@ TG_AUDIO_FILESIZE_LIMIT = int(getenv("TG_AUDIO_FILESIZE_LIMIT", "5242880000"))
 TG_VIDEO_FILESIZE_LIMIT = int(getenv("TG_VIDEO_FILESIZE_LIMIT", "5242880000"))
 
 # ───── Custom API Configs ───── #
-COOKIE_URL = getenv("https://batbin.me/adusk") #necessary
+COOKIE_URL = getenv("COOKIES_URL", "https://batbin.me/adusk") #necessary
 API_URL = getenv("API_URL") #optional
 API_KEY = getenv("API_KEY") #optional
 
@@ -39,7 +39,7 @@ HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 # ───── Git & Updates ───── #
-UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/CertifiedCoders/TuneViaBot")
+UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/hokagejian/kelraxmusic")
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "Master")
 GIT_TOKEN = getenv("GIT_TOKEN")
 
@@ -59,7 +59,7 @@ SPOTIFY_CLIENT_ID = getenv("SPOTIFY_CLIENT_ID", "22b6125bfe224587b722d6815002db2
 SPOTIFY_CLIENT_SECRET = getenv("SPOTIFY_CLIENT_SECRET", "c9c63c6fbf2f467c8bc68624851e9773")
 
 # ───── Session Strings ───── #
-STRING1 = getenv("AgAP-GEAvRmYm0xkVIxeBh-jqzLsWLnO5_zFEyp-4Vur0cu4_2QYxCVAkM-bf8kXxAQulgyKoYqnkkqgl5ROBYKhVyHTg6F57BhKrpIfEitbHV5rCdq4QrkrhnKlnZ7NC8mUxiWeojJHHUDvR_P-23Hr76FUQklUPT5tMY4CAEeglNme066d0S0vzxUvMezval-qOcAGt2ECuUjsf2kN7Vam6VxkQkpTvWAvQbHd6hsFa9lfhQUgFhBAWnC4pfLBS8DvLl2WjM4j36_eJ6n2hprzx_RC6L-aczgLfHF5J-uy6spVQlntw16dAx_N-30v4LqEx6OrZ4X-ovgpJGnfZ_kZDEah8wAAAAFfTVdrAA")
+STRING1 = getenv("STRING_SESSION1", "AgAP-GEAvRmYm0xkVIxeBh-jqzLsWLnO5_zFEyp-4Vur0cu4_2QYxCVAkM-bf8kXxAQulgyKoYqnkkqgl5ROBYKhVyHTg6F57BhKrpIfEitbHV5rCdq4QrkrhnKlnZ7NC8mUxiWeojJHHUDvR_P-23Hr76FUQklUPT5tMY4CAEeglNme066d0S0vzxUvMezval-qOcAGt2ECuUjsf2kN7Vam6VxkQkpTvWAvQbHd6hsFa9lfhQUgFhBAWnC4pfLBS8DvLl2WjM4j36_eJ6n2hprzx_RC6L-aczgLfHF5J-uy6spVQlntw16dAx_N-30v4LqEx6OrZ4X-ovgpJGnfZ_kZDEah8wAAAAFfTVdrAA")
 STRING2 = getenv("STRING_SESSION3") 
 STRING3 = getenv("STRING_SESSION3")
 STRING4 = getenv("STRING_SESSION4")
