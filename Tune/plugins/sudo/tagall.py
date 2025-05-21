@@ -37,7 +37,7 @@ async def tag_all_users(_, message):
     replied = message.reply_to_message
     if len(message.command) < 2 and not replied:
         await message.reply_text(
-            "<blockquote><b>Kasih teks nya der\n/tagall Hi Nikol ganteng</b></blockquote>"
+            "<blockquote><b>Kasih teks nya der\n/tagall Hi Kelra Music</b></blockquote>"
         )
         return
     if replied:
