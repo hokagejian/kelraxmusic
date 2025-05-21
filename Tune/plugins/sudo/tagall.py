@@ -1,4 +1,4 @@
-import asyncio
+uimport asyncio
 from pyrogram import filters
 from pyrogram.enums import ChatMembersFilter
 
@@ -51,7 +51,7 @@ async def tag_all_users(_, message):
                 if m.user.is_deleted or m.user.is_bot:
                     continue
                 usernum += 1
-                usertxt += f"\n<blockquote><b> [{m.user.first_name}](tg://user?id={m.user.id})  </b></blockquote>"
+                usertxt += f"\n<blockquote><b> [{m.user.first_name}](tg://user?id={m.user.id})</b></blockquote>"
                 if usernum == 7:
                     await replied.reply_text(
                         usertxt,
