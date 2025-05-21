@@ -1,7 +1,6 @@
 import html
 import re
 
-from telegram.error import BadRequest
 from telegram.ext import CommandHandler, MessageHandler, Filters
 from telegram.utils.helpers import mention_html
 
