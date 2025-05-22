@@ -44,7 +44,7 @@ UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = getenv("GIT_TOKEN")
 
 # ───── Support & Community ───── #
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://kelrapillas")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.mekelrapillas")
 SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/logskelra")
 
 # ───── Assistant Auto Leave ───── #
