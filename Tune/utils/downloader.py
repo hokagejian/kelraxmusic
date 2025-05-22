@@ -3,7 +3,7 @@ import aiohttp
 import aiofiles
 import os
 import re
-from typing import Optional, Union, Dict
+from typing import Optional, Union, Dict, List
 from yt_dlp import YoutubeDL
 from config import API_URL, API_KEY
 
@@ -15,25 +15,98 @@ cookies_file = "Tune/assets/cookies.txt"
 download_folder = "downloads"
 os.makedirs(download_folder, exist_ok=True)
 
-
 def extract_video_id(link: str) -> str:
     if "v=" in link:
         return link.split("v=")[-1].split("&")[0]
     return link.split("/")[-1].split("?")[0]
 
-
 def safe_filename(name: str) -> str:
     return re.sub(r"[\\/*?\"<>|]", "_", name).strip()[:100]
 
-
 def file_exists(video_id: str) -> Optional[str]:
-    for ext in ["mp3", "m4a", "webm"]:
+    for ext in ["mp3", "m4a", "webm", "mp4"]:
         path = f"{download_folder}/{video_id}.{ext}"
         if os.path.exists(path):
             print(f"[CACHED] Using existing file: {path}")
             return path
     return None
 
+def list_formats(link: str) -> List[Dict]:
+    """Return list of available formats for a link."""
+    try:
+        with YoutubeDL({"quiet": True, "cookiefile": cookies_file}) as ydl:
+            info = ydl.extract_info(link, download=False)
+            return info.get("formats", [])
+    except Exception as e:
+        print(f"[yt-dlp Error] {e}")
+        return []
+
+def _download_ytdlp(link: str, opts: Dict, fallback_formats: List[str] = None) -> Optional[str]:
+    try:
+        with YoutubeDL(opts) as ydl:
+            info = ydl.extract_info(link, download=False)
+            ext = info.get("ext", "webm")
+            vid = info.get("id")
+            path = f"{download_folder}/{vid}.{ext}"
+            if os.path.exists(path):
+                return path
+            try:
+                ydl.download([link])
+                return path
+            except Exception as e:
+                print(f"[yt-dlp Download Error] {e}")
+                # Fallback ke format lain jika ada
+                if fallback_formats:
+                    for fmt in fallback_formats:
+                        print(f"[yt-dlp] Trying fallback format: {fmt}")
+                        opts["format"] = fmt
+                        try:
+                            with YoutubeDL(opts) as ydl_fallback:
+                                ydl_fallback.download([link])
+                                return path
+                        except Exception as e2:
+                            print(f"[yt-dlp Fallback Error] {e2}")
+    except Exception as e:
+        print(f"[yt-dlp Error] {e}")
+    return None
+
+async def yt_dlp_download(
+    link: str,
+    type: str = "audio",
+    format_id: str = None,
+    title: str = None,
+    fallback_formats: List[str] = None
+) -> Optional[str]:
+    loop = asyncio.get_running_loop()
+    opts = {
+        "outtmpl": f"{download_folder}/%(id)s.%(ext)s",
+        "quiet": True,
+        "no_warnings": True,
+        "cookiefile": cookies_file,
+        "noplaylist": True,
+        "concurrent_fragment_downloads": 5,
+    }
+
+    if type == "audio":
+        opts["format"] = "bestaudio/best"
+        opts["postprocessors"] = [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "192",
+        }]
+        return await loop.run_in_executor(None, _download_ytdlp, link, opts, ["bestaudio", "best", "140"])
+
+    elif type == "video":
+        opts["format"] = "best[height<=?720][width<=?1280]/best"
+        return await loop.run_in_executor(None, _download_ytdlp, link, opts, ["best", "18", "22"])
+
+    elif type == "custom" and format_id:
+        safe_title = safe_filename(title) if title else "%(id)s"
+        opts["format"] = format_id
+        opts["outtmpl"] = f"{download_folder}/{safe_title}.%(ext)s"
+        return await loop.run_in_executor(None, _download_ytdlp, link, opts, fallback_formats or ["best"])
+
+    return None
 
 async def api_download_song(link: str) -> Optional[str]:
     global _logged_api_skip
@@ -87,88 +160,8 @@ async def api_download_song(link: str) -> Optional[str]:
         print(f"[API Download Error] {e}")
         return None
 
-
-def _download_ytdlp(link: str, opts: Dict) -> Optional[str]:
-    try:
-        with YoutubeDL(opts) as ydl:
-            info = ydl.extract_info(link, download=False)
-            ext = info.get("ext", "webm")
-            vid = info.get("id")
-            path = f"{download_folder}/{vid}.{ext}"
-            if os.path.exists(path):
-                return path
-            ydl.download([link])
-            return path
-    except Exception as e:
-        print(f"[yt-dlp Error] {e}")
-        return None
-
-
-async def yt_dlp_download(link: str, type: str, format_id: str = None, title: str = None) -> Optional[str]:
-    loop = asyncio.get_running_loop()
-
-    if type == "audio":
-        opts = {
-            "format": "bestaudio/best",
-            "outtmpl": f"{download_folder}/%(id)s.%(ext)s",
-            "quiet": True,
-            "no_warnings": True,
-            "cookiefile": cookies_file,
-            "noplaylist": True,
-            "concurrent_fragment_downloads": 5,
-        }
-        return await loop.run_in_executor(None, _download_ytdlp, link, opts)
-
-    elif type == "video":
-        opts = {
-            "format": "best[height<=?720][width<=?1280]",
-            "outtmpl": f"{download_folder}/%(id)s.%(ext)s",
-            "quiet": True,
-            "no_warnings": True,
-            "cookiefile": cookies_file,
-            "noplaylist": True,
-            "concurrent_fragment_downloads": 5,
-        }
-        return await loop.run_in_executor(None, _download_ytdlp, link, opts)
-
-    elif type == "song_video" and format_id and title:
-        safe_title = safe_filename(title)
-        opts = {
-            "format": f"{format_id}+140",
-            "outtmpl": f"{download_folder}/{safe_title}.mp4",
-            "quiet": True,
-            "no_warnings": True,
-            "prefer_ffmpeg": True,
-            "merge_output_format": "mp4",
-            "cookiefile": cookies_file,
-        }
-        await loop.run_in_executor(None, lambda: YoutubeDL(opts).download([link]))
-        return f"{download_folder}/{safe_title}.mp4"
-
-    elif type == "song_audio" and format_id and title:
-        safe_title = safe_filename(title)
-        opts = {
-            "format": format_id,
-            "outtmpl": f"{download_folder}/{safe_title}.%(ext)s",
-            "quiet": True,
-            "no_warnings": True,
-            "prefer_ffmpeg": True,
-            "cookiefile": cookies_file,
-            "postprocessors": [{
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "192",
-            }],
-        }
-        await loop.run_in_executor(None, lambda: YoutubeDL(opts).download([link]))
-        return f"{download_folder}/{safe_title}.mp3"
-
-    return None
-
-
 async def download_audio_concurrent(link: str) -> Optional[str]:
     video_id = extract_video_id(link)
-
     existing = file_exists(video_id)
     if existing:
         return existing
@@ -199,3 +192,13 @@ async def download_audio_concurrent(link: str) -> Optional[str]:
                 print(f"[Fallback Task Error] {e}")
 
     return None
+
+# Fungsi tambahan untuk melihat format yang tersedia
+def print_available_formats(link: str):
+    formats = list_formats(link)
+    if not formats:
+        print("No formats found.")
+        return
+    print("Available formats:")
+    for f in formats:
+        print(f"{f['format_id']}: {f.get('ext', '')} - {f.get('format_note', '')} - {f.get('filesize', 'unknown')} bytes")
