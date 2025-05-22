@@ -3,7 +3,7 @@ import aiohttp
 import aiofiles
 import os
 import re
-from typing import Optional, Union, Dict, List
+from typing import Optional, Dict, List
 from yt_dlp import YoutubeDL
 from config import API_URL, API_KEY
 
@@ -40,6 +40,15 @@ def list_formats(link: str) -> List[Dict]:
     except Exception as e:
         print(f"[yt-dlp Error] {e}")
         return []
+
+def print_available_formats(link: str):
+    formats = list_formats(link)
+    if not formats:
+        print("No formats found.")
+        return
+    print("Available formats for this video:")
+    for f in formats:
+        print(f"{f['format_id']}: {f.get('ext', '')} - {f.get('format_note', '')}")
 
 def _download_ytdlp(link: str, opts: Dict, fallback_formats: List[str] = None) -> Optional[str]:
     try:
@@ -192,13 +201,3 @@ async def download_audio_concurrent(link: str) -> Optional[str]:
                 print(f"[Fallback Task Error] {e}")
 
     return None
-
-# Fungsi tambahan untuk melihat format yang tersedia
-def print_available_formats(link: str):
-    formats = list_formats(link)
-    if not formats:
-        print("No formats found.")
-        return
-    print("Available formats:")
-    for f in formats:
-        print(f"{f['format_id']}: {f.get('ext', '')} - {f.get('format_note', '')} - {f.get('filesize', 'unknown')} bytes")
