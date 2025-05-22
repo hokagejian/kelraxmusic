@@ -44,8 +44,8 @@ UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = getenv("GIT_TOKEN")
 
 # ───── Support & Community ───── #
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://ofckelrapillas")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/kelrapillass")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://kelrapillas")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/logskelra")
 
 # ───── Assistant Auto Leave ───── #
 AUTO_LEAVING_ASSISTANT = False
@@ -59,7 +59,7 @@ SPOTIFY_CLIENT_ID = getenv("SPOTIFY_CLIENT_ID", "22b6125bfe224587b722d6815002db2
 SPOTIFY_CLIENT_SECRET = getenv("SPOTIFY_CLIENT_SECRET", "c9c63c6fbf2f467c8bc68624851e9773")
 
 # ───── Session Strings ───── #
-STRING1 = getenv("STRING_SESSION1", "AgAP-GEAvRmYm0xkVIxeBh-jqzLsWLnO5_zFEyp-4Vur0cu4_2QYxCVAkM-bf8kXxAQulgyKoYqnkkqgl5ROBYKhVyHTg6F57BhKrpIfEitbHV5rCdq4QrkrhnKlnZ7NC8mUxiWeojJHHUDvR_P-23Hr76FUQklUPT5tMY4CAEeglNme066d0S0vzxUvMezval-qOcAGt2ECuUjsf2kN7Vam6VxkQkpTvWAvQbHd6hsFa9lfhQUgFhBAWnC4pfLBS8DvLl2WjM4j36_eJ6n2hprzx_RC6L-aczgLfHF5J-uy6spVQlntw16dAx_N-30v4LqEx6OrZ4X-ovgpJGnfZ_kZDEah8wAAAAFfTVdrAA")
+STRING1 = getenv("STRING_SESSION1", "BQAP-GEAc_je8s5Nj-aNasb6XC6VjxpfNALnvS098Ae4cLUzDg-K4FV_uvTc4LBpAzBjQY49eAGenSxlmEV5tDVfh-a0MCO7_ZQ153eVSQCClD4YLVNjYjsIyYkozitMoEeu7812sqNYYKoDDvvkP8-uTTzc3h4_z2KNMfSb8h1o1Tl83Dh474S1pJN9EtC9qDa6lg4huVMnuvAA2WkOYMEcHPBWQbGIIkP7dGSc0OOWDG9A8azwPC-zRyudyIJV7olHvcR8btaqFJJmJu2ldbVN61ySWiXWGkQJIymbbkdcbxfbYwclYKQxGhtx62nJsnQMaWgFoz_WQUj2XSan9eYq09YS8AAAAAGIOTWdAA")
 STRING2 = getenv("STRING_SESSION3") 
 STRING3 = getenv("STRING_SESSION3")
 STRING4 = getenv("STRING_SESSION4")
