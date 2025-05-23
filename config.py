@@ -20,7 +20,7 @@ EVALOP = list(map(int, getenv("EVALOP", "1928612564").split()))
 
 # ───── Mongo & Logging ───── #
 MONGO_DB_URI = getenv("MONGO_DB_URI", "mongodb+srv://zea:123@cluster0.wlpzmlz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-LOGGER_ID = getevn("LOGGER_ID", "-1002465368786
+LOGGER_ID = getevn("LOGGER_ID", "-1002465368786")
 
 # ───── Limits and Durations ───── #
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 17000))
@@ -48,7 +48,7 @@ SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.mekelrapillas")
 SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/logskelra")
 
 # ───── Assistant Auto Leave ───── #
-AUTO_LEAVING_ASSISTANT = False
+AUTO_LEAVING_ASSISTANT = True
 AUTO_LEAVE_ASSISTANT_TIME = int(getenv("ASSISTANT_LEAVE_TIME", "11500"))
 
 # ───── Error Handling ───── #
