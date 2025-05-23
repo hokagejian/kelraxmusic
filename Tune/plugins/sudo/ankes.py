@@ -14,7 +14,6 @@ async def is_admin(client, message: Message):
     user_id = message.from_user.id
     chat_member = await app.get_chat_member(message.chat.id, user_id)
     return chat_member.status in ("administrator", "creator")
-admin_filter = filters.create(is_admin)
 
 def is_ankes_on(chat_id):
     return ANKES_STATE.get(chat_id, False)
@@ -37,69 +36,60 @@ def remove_free_user(chat_id, user_id):
 def is_free_user(chat_id, user_id):
     return user_id in FREE_USERS.get(chat_id, set())
 
-@app.on_message(filters.command(["ankes"]) & admin_filter & filters.group)
+@app.on_message(filters.command(["ankes"]) & filters.group)
 async def ankes_switch(client, message: Message):
+    if not await is_admin(client, message):
+        return await message.reply_text("Hanya admin yang bisa menggunakan perintah ini.")
     if len(message.command) < 2:
         return await message.reply_text(
-            "<blockquote>Masukkan <b>on</b> atau <b>off</b> setelah perintah.<br>Contoh: <code>/ankes on</code> atau <code>/ankes off</code></blockquote>",
-            parse_mode="html"
+            "Masukkan on atau off setelah perintah. Contoh: /ankes on atau /ankes off"
         )
     arg = message.command[1].lower()
     if arg == "on":
         ANKES_STATE[message.chat.id] = True
-        await message.reply_text(
-            "<blockquote>✅ Mode ANKES <b>ON</b>, blacklist aktif!</blockquote>",
-            parse_mode="html"
-        )
+        await message.reply_text("Mode ANKES ON, blacklist aktif!")
     elif arg == "off":
         ANKES_STATE[message.chat.id] = False
-        await message.reply_text(
-            "<blockquote>❌ Mode ANKES <b>OFF</b>, blacklist tidak aktif!</blockquote>",
-            parse_mode="html"
-        )
+        await message.reply_text("Mode ANKES OFF, blacklist tidak aktif!")
     else:
         await message.reply_text(
-            "<blockquote>❌ Pilihan tidak valid.<br>Gunakan <code>/ankes on</code> atau <code>/ankes off</code>.</blockquote>",
-            parse_mode="html"
+            "Pilihan tidak valid. Gunakan /ankes on atau /ankes off."
         )
 
-@app.on_message(filters.command(["blacklist", "bl"]) & admin_filter & filters.group)
+@app.on_message(filters.command(["blacklist", "bl"]) & filters.group)
 async def show_blacklist(client, message: Message):
+    if not await is_admin(client, message):
+        return await message.reply_text("Hanya admin yang bisa menggunakan perintah ini.")
     chat_id = message.chat.id
     bl = get_blacklist(chat_id)
     if not bl:
-        await message.reply_text(
-            "<blockquote>Tidak ada kata dalam blacklist.</blockquote>",
-            parse_mode="html"
-        )
+        await message.reply_text("Tidak ada kata dalam blacklist.")
     else:
         await message.reply_text(
-            "<blockquote>Kata blacklist:<br>" + "<br>".join(f"- {w}" for w in bl) + "</blockquote>",
-            parse_mode="html"
+            "Kata blacklist:\n" + "\n".join(f"- {w}" for w in bl)
         )
 
-@app.on_message(filters.command(["addblacklist", "adbl"]) & admin_filter & filters.group)
+@app.on_message(filters.command(["addblacklist", "adbl"]) & filters.group)
 async def add_blacklist_cmd(client, message: Message):
+    if not await is_admin(client, message):
+        return await message.reply_text("Hanya admin yang bisa menggunakan perintah ini.")
     chat_id = message.chat.id
     if len(message.command) < 2:
         return await message.reply_text(
-            "<blockquote>Masukkan kata atau kalimat yang ingin dimasukkan ke blacklist.<br>Contoh: <code>/adbl kata1 kata2</code></blockquote>",
-            parse_mode="html"
+            "Masukkan kata atau kalimat yang ingin dimasukkan ke blacklist. Contoh: /adbl kata1 kata2"
         )
     for w in message.command[1:]:
         add_to_blacklist(chat_id, w)
-    await message.reply_text(
-        "<blockquote>✅ Kata berhasil masuk blacklist!</blockquote>",
-        parse_mode="html"
-    )
+    await message.reply_text("Kata berhasil masuk blacklist!")
 
-@app.on_message(filters.command(["unblacklist", "unbl"]) & admin_filter & filters.group)
+@app.on_message(filters.command(["unblacklist", "unbl"]) & filters.group)
 async def remove_blacklist_cmd(client, message: Message):
+    if not await is_admin(client, message):
+        return await message.reply_text("Hanya admin yang bisa menggunakan perintah ini.")
     chat_id = message.chat.id
     if len(message.command) < 2:
         return await message.reply_text(
-            "<blockquote>Masukkan kata atau kalimat yang ingin dihapus dari blacklist.<br>Contoh: <code>/unbl kata1 kata2</code></blockquote>",
-            parse_mode="html"
+            "Masukkan kata atau kalimat yang ingin dihapus dari blacklist. Contoh: /unbl kata1 kata2"
         )
     not_found = []
     for w in message.command[1:]:
@@ -109,18 +99,16 @@ async def remove_blacklist_cmd(client, message: Message):
             remove_from_blacklist(chat_id, w)
     if not_found:
         await message.reply_text(
-            "<blockquote>Kata berikut tidak ada di dalam daftar blacklist:<br>" +
-            "<br>".join(f"- {w}" for w in not_found) + "</blockquote>",
-            parse_mode="html"
+            "Kata berikut tidak ada di dalam daftar blacklist:\n" +
+            "\n".join(f"- {w}" for w in not_found)
         )
     else:
-        await message.reply_text(
-            "<blockquote>✅ Kata berhasil dihapus dari blacklist!</blockquote>",
-            parse_mode="html"
-        )
+        await message.reply_text("Kata berhasil dihapus dari blacklist!")
 
-@app.on_message(filters.command(["free", "fre"]) & admin_filter & filters.group)
+@app.on_message(filters.command(["free", "fre"]) & filters.group)
 async def free_user_cmd(client, message: Message):
+    if not await is_admin(client, message):
+        return await message.reply_text("Hanya admin yang bisa menggunakan perintah ini.")
     chat_id = message.chat.id
     user_id = None
 
@@ -135,23 +123,18 @@ async def free_user_cmd(client, message: Message):
                 user = await app.get_users(arg)
                 user_id = user.id
             except Exception:
-                return await message.reply_text(
-                    "<blockquote>Username atau ID tidak valid.</blockquote>",
-                    parse_mode="html"
-                )
+                return await message.reply_text("Username atau ID tidak valid.")
     if not user_id:
         return await message.reply_text(
-            "<blockquote>Reply ke pesan pengguna atau masukkan id/username setelah perintah.<br>Contoh: <code>/free 123456789</code> atau <code>/fre username</code></blockquote>",
-            parse_mode="html"
+            "Reply ke pesan pengguna atau masukkan id/username setelah perintah. Contoh: /free 123456789 atau /fre username"
         )
     add_free_user(chat_id, user_id)
-    await message.reply_text(
-        "<blockquote>User telah dibebaskan dari blacklist.</blockquote>",
-        parse_mode="html"
-    )
+    await message.reply_text("User telah dibebaskan dari blacklist.")
 
-@app.on_message(filters.command(["unfree", "unfre"]) & admin_filter & filters.group)
+@app.on_message(filters.command(["unfree", "unfre"]) & filters.group)
 async def unfree_user_cmd(client, message: Message):
+    if not await is_admin(client, message):
+        return await message.reply_text("Hanya admin yang bisa menggunakan perintah ini.")
     chat_id = message.chat.id
     user_id = None
 
@@ -166,20 +149,13 @@ async def unfree_user_cmd(client, message: Message):
                 user = await app.get_users(arg)
                 user_id = user.id
             except Exception:
-                return await message.reply_text(
-                    "<blockquote>Username atau ID tidak valid.</blockquote>",
-                    parse_mode="html"
-                )
+                return await message.reply_text("Username atau ID tidak valid.")
     if not user_id:
         return await message.reply_text(
-            "<blockquote>Reply ke pesan pengguna atau masukkan id/username setelah perintah.<br>Contoh: <code>/unfree 123456789</code> atau <code>/unfre username</code></blockquote>",
-            parse_mode="html"
+            "Reply ke pesan pengguna atau masukkan id/username setelah perintah. Contoh: /unfree 123456789 atau /unfre username"
         )
     remove_free_user(chat_id, user_id)
-    await message.reply_text(
-        "<blockquote>User sudah tidak bebas dari blacklist.</blockquote>",
-        parse_mode="html"
-    )
+    await message.reply_text("User sudah tidak bebas dari blacklist.")
 
 @app.on_message(filters.text & filters.group)
 async def auto_delete_blacklist(client, message: Message):
@@ -188,10 +164,11 @@ async def auto_delete_blacklist(client, message: Message):
         return
     user_id = message.from_user.id
 
-    if not is_ankes_on(chat_id):
+    # Pesan dari admin atau free user tidak dihapus
+    if await is_admin(client, message) or is_free_user(chat_id, user_id):
         return
 
-    if await is_admin(client, message) or is_free_user(chat_id, user_id):
+    if not is_ankes_on(chat_id):
         return
 
     bl = get_blacklist(chat_id)
