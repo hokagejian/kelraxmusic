@@ -20,7 +20,7 @@ EVALOP = list(map(int, getenv("EVALOP", "1928612564").split()))
 
 # ───── Mongo & Logging ───── #
 MONGO_DB_URI = getenv("MONGO_DB_URI", "mongodb+srv://zea:123@cluster0.wlpzmlz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-LOGGER_ID = getevn("LOGGER_ID", "-1002465368786")
+LOGGER_ID = getenv("LOGGER_ID", "-1002465368786")
 
 # ───── Limits and Durations ───── #
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 17000))
