@@ -32,14 +32,12 @@ async def tag_all_users(_, message):
 
     if message.chat.id in SPAM_CHATS:
         return await message.reply_text(
-            "<blockquote><b>Tag all sedang berjalan der, ketik /cancel untuk membatalkan der</b></blockquote>",
-            parse_mode="html"
+            "Tag all sedang berjalan der, ketik /cancel untuk membatalkan der"
         )
     replied = message.reply_to_message
     if len(message.command) < 2 and not replied:
         await message.reply_text(
-            "<blockquote><b>Kasih teks nya der<br>/tagall Hi Kelra Music</b></blockquote>",
-            parse_mode="html"
+            "Kasih teks nya der\n/tagall Hi Kelra Music"
         )
         return
     if replied:
@@ -56,9 +54,8 @@ async def tag_all_users(_, message):
                 usertxt += f"[{m.user.first_name}](tg://user?id={m.user.id})  "
                 if usernum == 7:
                     sent = await replied.reply_text(
-                        f"<blockquote>{usertxt}</blockquote>",
+                        usertxt,
                         disable_web_page_preview=True,
-                        parse_mode="html"
                     )
                     await app.send_message(message.chat.id, WATERMARK, reply_to_message_id=sent.id)
                     await asyncio.sleep(1)
@@ -66,9 +63,8 @@ async def tag_all_users(_, message):
                     usertxt = ""
             if usernum != 0:
                 sent = await replied.reply_text(
-                    f"<blockquote>{usertxt}</blockquote>",
+                    usertxt,
                     disable_web_page_preview=True,
-                    parse_mode="html"
                 )
                 await app.send_message(message.chat.id, WATERMARK, reply_to_message_id=sent.id)
         except FloodWait as e:
@@ -93,9 +89,8 @@ async def tag_all_users(_, message):
                 if usernum == 7:
                     sent = await app.send_message(
                         message.chat.id,
-                        f"<blockquote><b>{text}</b><br>{usertxt}</blockquote>",
+                        f"{text}\n{usertxt}",
                         disable_web_page_preview=True,
-                        parse_mode="html"
                     )
                     await app.send_message(message.chat.id, WATERMARK, reply_to_message_id=sent.id)
                     await asyncio.sleep(2)
@@ -104,9 +99,8 @@ async def tag_all_users(_, message):
             if usernum != 0:
                 sent = await app.send_message(
                     message.chat.id,
-                    f"<blockquote><b>{text}</b><br>{usertxt}</blockquote>",
+                    f"{text}\n{usertxt}",
                     disable_web_page_preview=True,
-                    parse_mode="html"
                 )
                 await app.send_message(message.chat.id, WATERMARK, reply_to_message_id=sent.id)
         except FloodWait as e:
@@ -121,14 +115,12 @@ async def tag_all_admins(_, message):
         return
     if message.chat.id in SPAM_CHATS:
         return await message.reply_text(
-            "<blockquote><b>Tag all sedang berjalan der<br>Ketik /cancel untuk membatalkan der</b></blockquote>",
-            parse_mode="html"
+            "Tag all sedang berjalan der\nKetik /cancel untuk membatalkan der"
         )
     replied = message.reply_to_message
     if len(message.command) < 2 and not replied:
         await message.reply_text(
-            "<blockquote><b>Kasih teks nya der<br>/admins min lapor min</b></blockquote>",
-            parse_mode="html"
+            "Kasih teks nya der\n/admins min lapor min"
         )
         return
     if replied:
@@ -147,9 +139,8 @@ async def tag_all_admins(_, message):
                 usertxt += f"[{m.user.first_name}](tg://user?id={m.user.id})  "
                 if usernum == 7:
                     sent = await replied.reply_text(
-                        f"<blockquote>{usertxt}</blockquote>",
+                        usertxt,
                         disable_web_page_preview=True,
-                        parse_mode="html"
                     )
                     await app.send_message(message.chat.id, WATERMARK, reply_to_message_id=sent.id)
                     await asyncio.sleep(1)
@@ -157,9 +148,8 @@ async def tag_all_admins(_, message):
                     usertxt = ""
             if usernum != 0:
                 sent = await replied.reply_text(
-                    f"<blockquote>{usertxt}</blockquote>",
+                    usertxt,
                     disable_web_page_preview=True,
-                    parse_mode="html"
                 )
                 await app.send_message(message.chat.id, WATERMARK, reply_to_message_id=sent.id)
         except FloodWait as e:
@@ -186,9 +176,8 @@ async def tag_all_admins(_, message):
                 if usernum == 7:
                     sent = await app.send_message(
                         message.chat.id,
-                        f"<blockquote><b>{text}</b><br>{usertxt}</blockquote>",
+                        f"{text}\n{usertxt}",
                         disable_web_page_preview=True,
-                        parse_mode="html"
                     )
                     await app.send_message(message.chat.id, WATERMARK, reply_to_message_id=sent.id)
                     await asyncio.sleep(2)
@@ -197,9 +186,8 @@ async def tag_all_admins(_, message):
             if usernum != 0:
                 sent = await app.send_message(
                     message.chat.id,
-                    f"<blockquote><b>{text}</b><br>{usertxt}</blockquote>",
+                    f"{text}\n{usertxt}",
                     disable_web_page_preview=True,
-                    parse_mode="html"
                 )
                 await app.send_message(message.chat.id, WATERMARK, reply_to_message_id=sent.id)
         except FloodWait as e:
@@ -226,8 +214,7 @@ async def admintag_with_reporting(client, message):
     if message.command[0] == "report":
         if from_user_id in admins:
             return await message.reply_text(
-                "<blockquote><b>Lu itu admin der ngapain report<br>Tindak aja langsung der</b></blockquote>",
-                parse_mode="html"
+                "Lu itu admin der ngapain report\nTindak aja langsung der"
             )
 
     if from_user_id in admins:
@@ -235,8 +222,7 @@ async def admintag_with_reporting(client, message):
 
     if len(message.text.split()) <= 1 and not message.reply_to_message:
         return await message.reply_text(
-            "<blockquote><b>Reply ke pesan untuk report user tersebut.</b></blockquote>",
-            parse_mode="html"
+            "Reply ke pesan untuk report user tersebut."
         )
 
     reply = message.reply_to_message or message
@@ -244,8 +230,7 @@ async def admintag_with_reporting(client, message):
     linked_chat = (await client.get_chat(chat_id)).linked_chat
     if reply_user_id == app.id:
         return await message.reply_text(
-            "<blockquote><b>Lu report siapa der?, angin?</b></blockquote>",
-            parse_mode="html"
+            "Lu report siapa der?, angin?"
         )
     if (
         reply_user_id in admins
@@ -253,19 +238,18 @@ async def admintag_with_reporting(client, message):
         or (linked_chat and reply_user_id == linked_chat.id)
     ):
         return await message.reply_text(
-            "<blockquote><b>Lu tau yang lu report admin der?</b></blockquote>",
-            parse_mode="html"
+            "Lu tau yang lu report admin der?"
         )
 
     user_mention = reply.from_user.mention if reply.from_user else "the user"
-    text = f"<blockquote><b>Bocah ini : {user_mention}<br>Dilaporkan ke admin</b></blockquote>."
+    text = f"Bocah ini : {user_mention}\nDilaporkan ke admin."
 
     for admin in admins:
         admin_member = await client.get_chat_member(chat_id, admin)
         if not admin_member.user.is_bot and not admin_member.user.is_deleted:
-            text += f"[\u2063](tg://user?id={admin})"
+            text += f" [\u2063](tg://user?id={admin})"
 
-    await reply.reply_text(text, parse_mode="html")
+    await reply.reply_text(text)
 
 @app.on_message(
     filters.command(
@@ -293,21 +277,19 @@ async def cancelcmd(_, message):
         except Exception:
             pass
         return await message.reply_text(
-            "<blockquote><b>Tag all sukses dihentikan der</b></blockquote>",
-            parse_mode="html"
+            "Tag all sukses dihentikan der"
         )
     else:
         await message.reply_text(
-            "<blockquote><b>Gak ada proses berjalan der</b></blockquote>",
-            parse_mode="html"
+            "Gak ada proses berjalan der"
         )
         return
 
 __MODULE__ = "Tagall"
 __HELP__ = """
-<blockquote><b>Admin Only
+Admin Only
 /tagall - Tag all semua member grup lu der
 /admins - Tag all semua admin grup der
 /report - Report member tengil der [khusus member] 
-/cancel - Cancel tag all yang sedang berjalan der</b></blockquote>
+/cancel - Cancel tag all yang sedang berjalan der
 """
